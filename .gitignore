@@ -10,3 +10,6 @@ mysql_data/
 # Ignora arquivos de backup/exportação de dados
 *.sql
 *.dump
+
+__pycache__/
+venv/
