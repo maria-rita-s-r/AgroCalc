@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}
+Documentação da Análise
+{% endblock %}
+
+{% block css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css/solo.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="documento">
+
+<div class="documento-cabecalho">
+
+<span class="tag">
+    DOCUMENTAÇÃO AGRONÔMICA
+</span>
+
+<h1>
+    Documento da Análise de Solo
+</h1>
+
+<p>
+    Registro completo da análise e recomendação.
+</p>
+
+</div>
+
+
+{% if documento["consistencia_status"] == "INCONSISTENTE" %}
+<div class="alerta-calculo"><strong>LAUDO INCONSISTENTE — resultados exibidos com ressalva.</strong><p>Foram encontrados valores incompatíveis na análise. Os cálculos são mostrados para transparência, mas a dose não deve ser aplicada sem conferir o laudo original, as unidades e a análise com um profissional habilitado.</p><p>{{ documento["consistencia_detalhes"] or "Confira os valores informados." }}</p></div>
+{% elif documento["consistencia_status"] == "CONSISTENTE" %}
+<div class="nota-calculo"><strong>Conferência automática:</strong> não foram detectadas as inconsistências verificadas pelo sistema. Isso não substitui a validação agronômica.</div>
+{% endif %}
+
+<section>
+
+<h2>
+    Identificação
+</h2>
+
+<div class="documento-grid">
+
+<div>
+<strong>Produtor</strong>
+<span>
+    {{ documento["produtor_nome"] }}
+</span>
+</div>
+
+<div>
+<strong>Telefone</strong>
+<span>
+    {{ documento["telefone"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>Propriedade</strong>
+<span>
+    {{ documento["nome_propriedade"] }}
+</span>
+</div>
+
+<div>
+<strong>Município</strong>
+<span>
+    {{ documento["municipio"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>Estado</strong>
+<span>
+    {{ documento["estado"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>Talhão</strong>
+<span>
+    {{ documento["nome_talhao"] }}
+</span>
+</div>
+
+<div>
+<strong>Área</strong>
+<span>
+    {{ documento["area_ha"] }} ha
+</span>
+</div>
+
+<div>
+<strong>Cultura</strong>
+<span>
+    {{ documento["nome_cultura"] }}
+</span>
+</div>
+
+</div>
+
+</section>
+
+
+<section>
+
+<h2>
+    Análise de Solo
+</h2>
+
+<div class="documento-grid">
+
+<div>
+<strong>Data da coleta</strong>
+<span>
+    {{ documento["data_coleta"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>pH</strong>
+<span>
+    {{ documento["ph"] }}
+</span>
+</div>
+
+<div>
+<strong>V1 atual</strong>
+<span>
+    {{ documento["v1_atual"] }}%
+</span>
+</div>
+
+<div>
+<strong>V2 alvo utilizado</strong>
+<span>
+    {{ documento["v2_alvo"] if documento["v2_alvo"] is not none else "Não registrado" }}%
+</span>
+</div>
+
+<div>
+<strong>CTC T</strong>
+<span>
+    {{ documento["ctc_t"] }}
+</span>
+</div>
+
+<div>
+<strong>Ca</strong>
+<span>
+    {{ documento["ca"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>Mg</strong>
+<span>
+    {{ documento["mg"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>K</strong>
+<span>
+    {% if documento["k_original"] is not none %}
+        {{ "%.4f"|format(documento["k_original"]) }} {{ "mg/dm³" if documento["unidade_k"] == "mg/dm3" else ("cmolc/dm³" if documento["unidade_k"] == "cmolc/dm3" else documento["unidade_k"]) }}
+        <small class="hint">Valor original do laudo; convertido internamente para o cálculo.</small>
+    {% else %}
+        Não registrado na unidade original (relatório antigo). Confira o laudo antes de reutilizar este resultado.
+    {% endif %}
+</span>
+</div>
+
+<div>
+<strong>P</strong>
+<span>
+    {{ documento["p"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>H + Al</strong>
+<span>
+    {{ documento["h_al"] or "-" }}
+</span>
+</div>
+
+<div>
+<strong>Argila</strong>
+<span>
+    {{ documento["argila"] or "-" }}
+</span>
+</div>
+
+</div>
+
+</section>
+
+
+<section>
+
+<h2>
+    Recomendação
+</h2>
+
+<div class="resultado-destaque">
+
+<div>
+
+<span>
+    Calcário
+</span>
+
+<strong>
+    {{ documento["nome_comercial"] }}
+</strong>
+<span>Tipo: {{ documento["tipo_calcario"] or "Não informado" }}</span>
+<span>PRNT: {{ documento["prnt_porcento"] if documento["prnt_porcento"] is not none else "Não registrado" }}%</span>
+
+</div>
+
+<div>
+
+<span>
+    NC
+</span>
+
+<strong>
+    {{ "%.2f"|format(documento["nc_ha"]) }}
+    t/ha
+</strong>
+
+</div>
+
+<div>
+
+<span>
+    Dose
+</span>
+
+<strong>
+    {{ "%.2f"|format(documento["dose_calcario_ha"]) }}
+    t/ha
+</strong>
+
+</div>
+
+<div>
+
+<span>
+    Total
+</span>
+
+<strong>
+    {{ "%.2f"|format(documento["total_calcario_talhao"]) }}
+    t
+</strong>
+
+</div>
+
+</div>
+
+
+{% if itens_adubacao %}
+<h3>Planejamento de adubação informado pelo agrônomo</h3>
+<p>As metas de nutrientes foram convertidas em dose de produto com base nos teores cadastrados. Esta tabela não representa uma interpretação automática da classe de fertilidade do solo.</p>
+<div class="table-responsive"><table><thead><tr><th>Nutriente</th><th>Fertilizante</th><th>Meta (kg/ha)</th><th>Dose (kg/ha)</th><th>Total (kg)</th></tr></thead><tbody>
+{% for item in itens_adubacao %}<tr><td>{{ item['nutriente'] }}</td><td>{{ item['nome_comercial'] }}</td><td>{{ '%.2f'|format(item['alvo_kg_ha']) }}</td><td>{{ '%.2f'|format(item['dose_kg_ha']) }}</td><td>{{ '%.2f'|format(item['total_kg']) }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+</section>
+
+
+<section class="memoria-calculo"><h2>Memória de cálculo</h2>
+<p><strong>Método:</strong> saturação por bases, com CTC a pH 7, para a camada de referência de 0–20 cm.</p>
+<p>NC base (t/ha, equivalente a PRNT 100%) = max[0, CTC × (V2 − V1) / 100].</p>
+<p>Dose do produto comercial (t/ha) = NC base × (100 / PRNT). Total para o talhão (t) = dose do produto × área (ha).</p>
+<p class="nota-calculo">O V2 utilizado é o valor cadastrado para a cultura selecionada. Ele depende da cultura, região, solo e sistema de manejo; não existe um único valor adequado para todas as culturas. Confira o cadastro e use uma referência técnica regional ou orientação de profissional habilitado.</p>
+{% if documento["v2_alvo"] is not none and documento["v1_atual"] is not none and documento["v2_alvo"] <= documento["v1_atual"] %}<p class="alerta-calculo"><strong>Atenção:</strong> o V% atual ({{ documento["v1_atual"] }}%) é igual ou maior que o V% alvo ({{ documento["v2_alvo"] }}%). Por isso, a fórmula retorna necessidade de calagem zero. Confira o V% alvo cadastrado para a cultura e o laudo com o responsável técnico.</p>{% endif %}
+<p class="nota-calculo">Este resultado segue o método de saturação por bases e os dados informados. A recomendação agronômica final deve ser conferida por profissional habilitado, considerando região, cultura, profundidade de amostragem e método laboratorial.</p></section>
+
+<div class="acoes">
+
+<button
+    onclick="imprimirDocumento()"
+    class="botao principal"
+    type="button"
+>
+    Imprimir documento
+</button>
+
+<a
+    href="{{ url_for('recomendacoes_solo') }}"
+    class="botao secundario"
+>
+    Voltar
+</a>
+
+</div>
+
+</div>
+
+<script>
+function imprimirDocumento() {
+    const relatorio = document.querySelector('.documento');
+    if (!relatorio) {
+        window.alert('Não foi possível localizar os dados do relatório.');
+        return;
+    }
+
+    const copia = relatorio.cloneNode(true);
+    const acoes = copia.querySelector('.acoes');
+    if (acoes) acoes.remove();
+
+    const janelaImpressao = window.open('', '_blank', 'width=900,height=700');
+    if (!janelaImpressao) {
+        window.alert('O navegador bloqueou a janela de impressão. Permita pop-ups para este site e tente novamente.');
+        return;
+    }
+
+    janelaImpressao.document.open();
+    janelaImpressao.document.write(`<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documento da Análise de Solo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css/solo.css') }}">
+<style>
+@page { size: auto; margin: 12mm; }
+body { margin: 0; padding: 0; background: #fff; color: #222; font-family: Arial, sans-serif; }
+.documento { width: 100%; max-width: none; margin: 0; padding: 0; border: 0; box-shadow: none; background: #fff; }
+.acoes { display: none !important; }
+section, .documento-grid > div, .memoria-calculo, .alerta-calculo, .nota-calculo { break-inside: avoid; page-break-inside: avoid; }
+@media screen { body { padding: 20px; } }
+</style>
+</head>
+<body>${copia.outerHTML}</body>
+</html>`);
+    janelaImpressao.document.close();
+    janelaImpressao.onload = function () {
+        janelaImpressao.focus();
+        janelaImpressao.print();
+    };
+}
+</script>
+
+{% endblock %}

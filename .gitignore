@@ -1,0 +1,55 @@
+
+# Python: arquivos temporários e compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Bancos locais e arquivos de transação
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Backups locais: não enviar dados reais ao GitHub
+*.dump
+*.bak
+*.backup
+*.old
+
+# Scripts SQL do projeto devem ser versionados
+*.sql
+!database/*.sql
+!database/**/*.sql
+
+# Dados locais de SGBDs
+postgres_data/
+mysql_data/
+
+# Configurações e dados locais da aplicação
+instance/
+
+# Logs
+*.log
+logs/
+
+# Testes, cobertura e ferramentas de qualidade
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db

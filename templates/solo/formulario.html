@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}
+Laudo de Solo
+{% endblock %}
+
+{% block head %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css/solo.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="solo-cabecalho">
+
+<span class="tag">
+    LAUDO DE SOLO
+</span>
+
+<h1>
+    Dados da análise
+</h1>
+
+<p>
+    Preencha os dados exatamente como aparecem no laudo. Confira as unidades antes de calcular.
+</p>
+
+</div>
+
+
+<div class="informacoes-solo">
+
+<div>
+    <strong>Produtor</strong>
+    <span>{{ talhao["produtor_nome"] }}</span>
+</div>
+
+<div>
+    <strong>Propriedade</strong>
+    <span>{{ talhao["nome_propriedade"] }}</span>
+</div>
+
+<div>
+    <strong>Talhão</strong>
+    <span>{{ talhao["nome_talhao"] }}</span>
+</div>
+
+<div>
+    <strong>Cultura</strong>
+    <span>{{ cultura["nome_cultura"] }}</span>
+</div>
+
+</div>
+
+
+<form action="{{ url_for('calcular_solo') }}" method="POST" class="solo-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+{% if solicitacao_id %}<input type="hidden" name="solicitacao_id" value="{{ solicitacao_id }}">{% endif %}
+
+<input
+    type="hidden"
+    name="talhao_id"
+    value="{{ talhao['id'] }}"
+>
+
+<input
+    type="hidden"
+    name="cultura_id"
+    value="{{ cultura['id'] }}"
+>
+
+
+<div class="grupo-form">
+
+<h2>
+    Identificação
+</h2>
+
+<label>
+    Data da coleta
+</label>
+
+<input
+    type="date"
+    name="data_coleta"
+    required
+>
+
+</div>
+
+
+<div class="grupo-form">
+
+<h2>
+    Parâmetros principais
+</h2>
+
+
+<div class="grid-form">
+
+<div>
+
+<label>
+    pH
+</label>
+
+<div class="unit-field"><input type="number" name="ph" min="3" max="10" step="0.01" required><span class="unit-fixed">pH</span></div>
+<small class="hint">Faixa de conferência do AgroCalc: pH 3 a 10. Se o laudo estiver fora dessa faixa, confira a digitação e a unidade com o laboratório.</small>
+
+</div>
+
+
+<div>
+
+<label>
+    V1 atual (%)
+</label>
+
+<div class="unit-field"><input type="number" name="v1_atual" min="0" max="100" step="0.01" required><span class="unit-fixed">%</span></div>
+<small class="hint">Mínimo 0% e máximo 100%.</small>
+
+</div>
+
+
+<div>
+
+<label>
+    CTC T
+</label>
+
+<div class="unit-field"><input type="number" name="ctc_t" min="0.01" max="1000" step="0.01" required><select aria-label="Unidade da CTC" name="unidade_ctc_t"><option value="cmolc/dm3" selected>cmolc/dm³</option><option value="mmolc/dm3">mmolc/dm³</option></select></div>
+<small class="hint">Informe a CTC a pH 7 em cmolc/dm³. Deve ser maior que 0; valores acima de 50 serão tratados como atípicos e precisam de conferência técnica.</small>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="grupo-form">
+
+<h2>
+    Nutrientes
+</h2>
+<p class="hint">Digite somente o número (por exemplo, 45) e selecione a unidade que aparece no laudo. O AgroCalc converte para a unidade interna do cálculo; não precisa digitar símbolos ou unidades junto ao número.</p>
+
+
+<div class="grid-form">
+
+<div>
+
+<label>
+    Ca
+</label>
+
+<div class="unit-field"><input type="number" name="ca" min="0" max="5000" step="0.01"><select id="unidade_ca" aria-label="Unidade do Ca" name="unidade_ca"><option value="cmolc/dm3" selected>cmolc/dm³</option><option value="mmolc/dm3">mmolc/dm³</option><option value="mg/dm3">mg/dm³</option></select></div>
+
+</div>
+
+
+<div>
+
+<label>
+    Mg
+</label>
+
+<div class="unit-field"><input type="number" name="mg" min="0" max="5000" step="0.01"><select id="unidade_mg" aria-label="Unidade do Mg" name="unidade_mg"><option value="cmolc/dm3" selected>cmolc/dm³</option><option value="mmolc/dm3">mmolc/dm³</option><option value="mg/dm3">mg/dm³</option></select></div>
+
+</div>
+
+
+<div>
+
+<label>
+    K
+</label>
+
+<div class="unit-field"><input type="number" name="k" min="0" max="5000" step="0.01"><select id="unidade_k" aria-label="Unidade do K" name="unidade_k"><option value="mg/dm3" selected>mg/dm³</option><option value="cmolc/dm3">cmolc/dm³</option></select></div>
+
+</div>
+
+
+<div>
+
+<label>
+    P
+</label>
+
+<div class="unit-field"><input type="number" name="p" min="0" max="1000" step="0.01"><select aria-label="Unidade do fósforo" name="unidade_p"><option value="mg/dm3" selected>mg/dm³</option><option value="ppm">ppm</option></select></div><small class="hint">ppm e mg/dm³ são tratados como equivalentes neste formulário.</small>
+
+</div>
+
+
+<div>
+
+<label>
+    H + Al
+</label>
+
+<div class="unit-field"><input type="number" name="h_al" min="0" max="5000" step="0.01"><select id="unidade_h_al" aria-label="Unidade de H + Al" name="unidade_h_al"><option value="cmolc/dm3" selected>cmolc/dm³</option><option value="mmolc/dm3">mmolc/dm³</option></select></div>
+
+</div>
+
+
+<div>
+
+<label>
+    Argila
+</label>
+
+<div class="unit-field"><input type="number" name="argila" min="0" max="1000" step="0.1"><select aria-label="Unidade da argila" name="unidade_argila"><option value="%" selected>%</option><option value="g/kg">g/kg</option></select></div><small class="hint">Informe a unidade conforme o laudo.</small>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="grupo-form"><h2>Corretivo</h2><label for="calcario_id">Tipo de calcário / produto</label>
+<select id="calcario_id" name="calcario_id" required><option value="">Selecione o calcário</option>{% for calcario in calcarios %}<option value="{{ calcario['id'] }}">{{ calcario['nome_comercial'] }} — {{ (calcario['tipo_calcario'] or 'tipo não informado')|capitalize }} — PRNT {{ calcario['prnt_porcento'] }}%</option>{% endfor %}</select>
+<small class="hint">A fórmula usa o V% alvo cadastrado para a cultura selecionada. Esse valor varia conforme cultura, região, solo e sistema de manejo; confirme-o em fonte técnica regional ou com profissional habilitado. A fórmula assume CTC a pH 7 e camada de referência de 0–20 cm. A dose é corrigida pelo PRNT real do produto.</small></div>
+
+<div class="grupo-form grupo-adubacao">
+<h2>Planejamento de adubação (opcional)</h2>
+<p class="hint">Informe as metas de N, P₂O₅ e K₂O em kg/ha já definidas pelo agrônomo conforme recomendação técnica regional. O AgroCalc converte essas metas em quantidade de produto com base no teor cadastrado. Este recurso não classifica automaticamente P e K do laudo nem substitui a recomendação agronômica.</p>
+<div class="grid-form">
+<div><label for="alvo_n_kg_ha">Meta de N (kg/ha)</label><input id="alvo_n_kg_ha" name="alvo_n_kg_ha" type="number" min="0" max="1000" step="0.1" value="0"><label for="fertilizante_n_id">Fertilizante para N</label><select id="fertilizante_n_id" name="fertilizante_n_id"><option value="">Selecione se a meta for maior que zero</option>{% for f in fertilizantes %}<option value="{{ f['id'] }}">{{ f['nome_comercial'] }} — {{ f['teor_n'] }}% N</option>{% endfor %}</select></div>
+<div><label for="alvo_p2o5_kg_ha">Meta de P₂O₅ (kg/ha)</label><input id="alvo_p2o5_kg_ha" name="alvo_p2o5_kg_ha" type="number" min="0" max="1000" step="0.1" value="0"><label for="fertilizante_p_id">Fertilizante para P₂O₅</label><select id="fertilizante_p_id" name="fertilizante_p_id"><option value="">Selecione se a meta for maior que zero</option>{% for f in fertilizantes %}<option value="{{ f['id'] }}">{{ f['nome_comercial'] }} — {{ f['teor_p2o5'] }}% P₂O₅</option>{% endfor %}</select></div>
+<div><label for="alvo_k2o_kg_ha">Meta de K₂O (kg/ha)</label><input id="alvo_k2o_kg_ha" name="alvo_k2o_kg_ha" type="number" min="0" max="1000" step="0.1" value="0"><label for="fertilizante_k_id">Fertilizante para K₂O</label><select id="fertilizante_k_id" name="fertilizante_k_id"><option value="">Selecione se a meta for maior que zero</option>{% for f in fertilizantes %}<option value="{{ f['id'] }}">{{ f['nome_comercial'] }} — {{ f['teor_k2o'] }}% K₂O</option>{% endfor %}</select></div>
+</div>
+<small class="hint">O cálculo considera cada nutriente separadamente. Se usar fertilizante composto, os nutrientes adicionais fornecidos pelo mesmo produto precisam ser considerados pelo responsável técnico para evitar aplicação excessiva.</small>
+</div>
+
+<div class="acoes">
+
+<a
+    href="{{ url_for('calculadora_solo') }}"
+    class="botao secundario"
+>
+    Voltar
+</a>
+
+<button
+    type="submit"
+    class="botao principal"
+>
+    Calcular recomendação
+</button>
+
+</div>
+
+</form>
+
+{% endblock %}

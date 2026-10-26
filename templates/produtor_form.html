@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{% if produtor %}Editar produtor{% else %}Cadastrar produtor{% endif %} | AgroCalc{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><div class="eyebrow">Gestão de produtores</div><h1>{% if produtor %}Editar produtor{% else %}Novo produtor{% endif %}</h1><p>Cadastre os dados básicos do responsável pela propriedade rural.</p></div>
+  <a href="{{ url_for('produtores') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Voltar para produtores</a>
+</div>
+<section class="form-shell">
+  <div class="form-banner"><div class="form-icon"><i class="bi bi-person-vcard"></i></div><div><h1 class="form-title">Dados do produtor</h1><p>Preencha as informações abaixo para manter o cadastro organizado.</p></div></div>
+  <form method="POST" action="{{ url_for('editar_produtor', id=produtor.id) if produtor else url_for('novo_produtor') }}" class="form-body">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <p class="section-label">Informações pessoais</p>
+    <div class="mb-4">
+      <label class="form-label" for="nome">Nome completo <span class="text-danger">*</span></label>
+      <input class="form-control" id="nome" name="nome" type="text" maxlength="120" autocomplete="name" placeholder="Ex.: Maria Oliveira da Silva" value="{{ produtor.nome if produtor else '' }}" required>
+      <div class="field-hint">Use o nome pelo qual o produtor é identificado no cadastro.</div>
+    </div>
+    {% if not produtor %}
+    <div class="mb-4">
+      <label class="form-label" for="email">E-mail de acesso <span class="text-danger">*</span></label>
+      <input class="form-control" id="email" name="email" type="email" maxlength="160" required placeholder="produtor@exemplo.com">
+    </div>
+    <div class="mb-4">
+      <label class="form-label" for="senha">Senha inicial <span class="text-danger">*</span></label>
+      <input class="form-control" id="senha" name="senha" type="password" minlength="8" required placeholder="Mínimo de 8 caracteres">
+    </div>
+    {% endif %}
+    <div class="mb-2">
+      <label class="form-label" for="telefone">Telefone para contato</label>
+      <input class="form-control" id="telefone" name="telefone" type="tel" maxlength="20" autocomplete="tel" placeholder="Ex.: (69) 99999-9999" value="{{ produtor.telefone if produtor else '' }}">
+      <div class="field-hint">Campo opcional, usado apenas para contato relacionado ao cadastro.</div>
+    </div>
+    <div class="security-note"><i class="bi bi-shield-lock-fill"></i><div><strong>Proteção do formulário</strong><br>Este cadastro usa um token de segurança por sessão para rejeitar envios sem validação e reduzir o risco de solicitações forjadas (CSRF).</div></div>
+    <div class="form-actions"><a href="{{ url_for('produtores') }}" class="btn btn-outline-secondary">Cancelar</a><button type="submit" class="btn btn-success"><i class="bi bi-check2-circle me-2"></i>{% if produtor %}Salvar alterações{% else %}Cadastrar produtor{% endif %}</button></div>
+  </form>
+</section>
+{% endblock %}

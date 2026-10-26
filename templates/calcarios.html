@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Calcários cadastrados · AgroCalc{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">CATÁLOGO DE CORRETIVOS</span>
+    <h1>Calcários</h1>
+    <p>Consulte os calcários disponíveis e cadastre produtos usando o PRNT informado pelo fabricante ou certificado.</p>
+  </div>
+  <a class="primary-button" href="{{ url_for('novo_calcario') }}">+ Cadastrar calcário</a>
+</section>
+<div class="data-card">
+  {% if calcarios %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nome comercial</th><th>Tipo</th><th>PRNT</th><th class="text-end">Ações</th></tr></thead>
+    <tbody>{% for calcario in calcarios %}
+      <tr><td>{{ calcario['nome_comercial'] }}</td><td>{{ (calcario['tipo_calcario'] or 'Não informado')|capitalize }}</td><td>{{ '%.2f'|format(calcario['prnt_porcento']) }}%</td><td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('editar_calcario', id=calcario['id']) }}">Editar</a><form method="post" data-http-method="DELETE" action="{{ url_for('excluir_calcario', id=calcario['id']) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button></form></td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+  {% else %}
+  <div class="empty-state"><span>✳</span><strong>Nenhum calcário cadastrado</strong><p>Cadastre o corretivo e informe o PRNT real para liberar os cálculos de calagem.</p><a class="primary-button" href="{{ url_for('novo_calcario') }}">Cadastrar primeiro calcário</a></div>
+  {% endif %}
+</div>
+{% endblock %}

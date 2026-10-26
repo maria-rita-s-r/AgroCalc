@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resultado da Análise
+{% endblock %}
+
+{% block css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/solo.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="solo-cabecalho">
+
+<span class="tag">
+    RESULTADO
+</span>
+
+<h1>
+    Recomendação de Solo
+</h1>
+
+<p>
+    Resultado calculado pelo método de saturação por bases, com os parâmetros registrados na análise.
+</p>
+{% if recomendacao["consistencia_status"] == "INCONSISTENTE" %}
+<div class="alerta-calculo"><strong>LAUDO INCONSISTENTE — confira os valores.</strong><p>O AgroCalc exibiu os resultados calculados, mas encontrou incompatibilidades entre os parâmetros informados. A dose abaixo é apenas um resultado matemático dos dados inseridos e não deve ser usada como recomendação até conferir o laudo original e as unidades.</p><p>{{ recomendacao["consistencia_detalhes"] or "Confira os valores e unidades informados." }}</p></div>
+{% endif %}
+{% if recomendacao["v2_alvo"] is not none %}
+<p class="nota-calculo">V% alvo utilizado: {{ recomendacao["v2_alvo"] }}%. Esse alvo precisa ser definido para a cultura, região, solo e sistema de manejo a partir de recomendação técnica local.</p>
+{% endif %}
+{% if recomendacao["v2_alvo"] is not none and recomendacao["v1_atual"] is not none and recomendacao["v1_atual"] >= recomendacao["v2_alvo"] %}
+<div class="alerta-calculo"><strong>Atenção:</strong> o V% atual é igual ou maior que o alvo. A fórmula retorna dose zero para elevar a saturação por bases. Isso não substitui a avaliação de pH, Ca, Mg, acidez, cultura e manejo por profissional habilitado.</div>
+{% endif %}
+
+</div>
+
+
+<div class="resultado-grid">
+
+
+<div class="resultado-card">
+
+<span>
+    Cultura
+</span>
+
+<strong>
+    {{ recomendacao["nome_cultura"] }}
+</strong>
+
+</div>
+
+
+<div class="resultado-card">
+
+<span>
+    Talhão
+</span>
+
+<strong>
+    {{ recomendacao["nome_talhao"] }}
+</strong>
+
+</div>
+
+
+<div class="resultado-card">
+
+<span>
+    Área
+</span>
+
+<strong>
+    {{ "%.2f"|format(recomendacao["area_ha"]) }}
+    ha
+</strong>
+
+</div>
+
+
+<div class="resultado-card">
+
+<span>
+    V1 atual
+</span>
+
+<strong>
+    {{ recomendacao["v1_atual"] }}%
+</strong>
+
+</div>
+
+
+</div>
+
+
+<section class="recomendacao-principal">
+
+<h2>
+    Recomendação de Calcário
+</h2>
+
+
+<div class="resultado-destaque">
+
+<div>
+
+<span>
+    Necessidade de calcário
+</span>
+
+<strong>
+    {{ "%.2f"|format(recomendacao["nc_ha"]) }}
+    t/ha
+</strong>
+
+</div>
+
+
+<div>
+
+<span>
+    Dose corrigida pelo PRNT
+</span>
+
+<strong>
+    {{ "%.2f"|format(recomendacao["dose_calcario_ha"]) }}
+    t/ha
+</strong>
+
+</div>
+
+
+<div>
+
+<span>
+    Total para o talhão
+</span>
+
+<strong>
+    {{ "%.2f"|format(recomendacao["total_calcario_talhao"]) }}
+    t
+</strong>
+
+</div>
+
+</div>
+
+<p class="nota-calculo">NC apresentada como equivalente a PRNT 100%. A dose comercial considera o PRNT selecionado. Confira unidades, camada de amostragem (referência 0–20 cm) e sistema de manejo; plantio direto pode exigir critério específico.</p>
+</section>
+
+
+{% if itens_adubacao %}
+<section class="recomendacao-principal">
+<h2>Planejamento de adubação registrado</h2>
+<p class="nota-calculo">As metas abaixo foram informadas pelo agrônomo e convertidas em dose de produto pelos teores cadastrados; não são uma classificação automática da fertilidade do solo.</p>
+<div class="table-responsive"><table><thead><tr><th>Nutriente</th><th>Produto</th><th>Meta (kg/ha)</th><th>Dose do produto (kg/ha)</th><th>Total no talhão (kg)</th></tr></thead><tbody>
+{% for item in itens_adubacao %}<tr><td>{{ item['nutriente'] }}</td><td>{{ item['nome_comercial'] }}</td><td>{{ '%.2f'|format(item['alvo_kg_ha']) }}</td><td>{{ '%.2f'|format(item['dose_kg_ha']) }}</td><td>{{ '%.2f'|format(item['total_kg']) }}</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+{% else %}
+<section class="recomendacao-principal"><h2>Adubação</h2><p>Não foi registrado plano de adubação nesta análise. Para recomendar doses com base na análise do solo, é necessário aplicar critérios técnicos específicos para a cultura, região, produtividade esperada e método de análise laboratorial.</p></section>
+{% endif %}
+
+<div class="acoes acoes-resultado">
+
+<a
+    href="{{ url_for('recomendacoes_solo') }}"
+    class="botao secundario"
+>
+    Ver histórico
+</a>
+
+<a
+    href="{{ url_for('documento_solo', recomendacao_id=recomendacao['id']) }}"
+    class="botao principal"
+>
+    Ver documento
+</a>
+
+</div>
+
+<style>
+/* Mantém os links de navegação claramente separados no resultado. */
+.acoes-resultado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 30px;
+}
+.acoes-resultado .botao {
+    display: inline-flex;
+    width: 220px;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+@media (max-width: 600px) {
+    .acoes-resultado { align-items: stretch; }
+    .acoes-resultado .botao { width: 100%; }
+}
+</style>
+
+{% endblock %}

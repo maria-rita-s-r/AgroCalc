@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Talhões · AgroCalc{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow">GESTÃO AGRONÔMICA</span><h1>Talhões</h1><p>Gerencie as áreas de cultivo vinculadas às terras e aos produtores responsáveis.</p></div>
+  <a class="primary-button" href="{{ url_for('novo_talhao') }}">＋ Cadastrar talhão</a>
+</div>
+<div class="data-card">
+  {% if talhoes %}
+    <div class="table-wrap"><table><thead><tr><th>Talhão</th><th>Terra</th><th>Produtor responsável</th><th>Área (ha)</th><th>Ações</th></tr></thead><tbody>
+    {% for t in talhoes %}
+      <tr><td><strong>{{ t.nome_talhao }}</strong></td><td>{{ t.nome_propriedade }}</td><td>{{ t.produtor_nome }}</td><td>{{ '%.2f'|format(t.area_ha) }}</td><td class="actions"><a href="{{ url_for('editar_talhao', id=t.id) }}">Editar</a><form method="post" action="{{ url_for('excluir_talhao', id=t.id) }}" onsubmit="return confirm('Deseja excluir este talhão?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="danger-link">Excluir</button></form></td></tr>
+    {% endfor %}
+    </tbody></table></div>
+  {% else %}
+    <div class="empty-state"><span>▦</span><strong>Nenhum talhão cadastrado</strong><p>Cadastre um talhão e vincule-o à terra do produtor responsável.</p><a class="primary-button" href="{{ url_for('novo_talhao') }}">Cadastrar primeiro talhão</a></div>
+  {% endif %}
+</div>
+{% endblock %}

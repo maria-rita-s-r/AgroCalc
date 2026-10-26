@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if calcario else 'Cadastrar' }} calcário · AgroCalc{% endblock %}
+{% block content %}
+<section class="page-heading"><div><span class="eyebrow">CATÁLOGO DE CORRETIVOS</span><h1>{{ 'Editar calcário' if calcario else 'Cadastrar calcário' }}</h1><p>Use o tipo e o PRNT que constam no rótulo, laudo ou certificado do fabricante.</p></div><a class="secondary-button" href="{{ url_for('painel_produtor') if produtor else url_for('calcarios') }}">Voltar</a></section>
+<div class="card form-card"><form method="post" action="{{ acao_calcario or url_for('novo_calcario') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="form-group"><label for="nome_comercial">Nome comercial</label><input class="form-control" id="nome_comercial" name="nome_comercial" maxlength="120" required value="{{ nome_comercial or '' }}" placeholder="Ex.: Calcário dolomítico"></div>
+<div class="form-group"><label for="tipo_calcario">Tipo de calcário</label><select class="form-control" id="tipo_calcario" name="tipo_calcario" required><option value="">Selecione o tipo</option>{% for tipo in ['calcítico','dolomítico','magnesiano','não informado'] %}<option value="{{ tipo }}" {% if tipo_calcario == tipo %}selected{% endif %}>{{ tipo|capitalize }}</option>{% endfor %}</select><small class="hint">Escolha conforme a composição indicada pelo fabricante. Se o rótulo não informar, confirme com um responsável técnico.</small></div>
+<div class="form-group"><label for="prnt_porcento">PRNT (%)</label><input class="form-control" id="prnt_porcento" name="prnt_porcento" type="number" min="0.01" max="100" step="0.01" required value="{{ prnt_porcento or '' }}" placeholder="Ex.: 85"><small class="hint">Mínimo maior que 0 e máximo 100%. Digite o valor real do rótulo; o PRNT afeta diretamente a dose calculada.</small></div>
+<button class="primary-button" type="submit">{{ 'Salvar alterações' if calcario else 'Salvar calcário' }}</button></form></div>
+{% endblock %}

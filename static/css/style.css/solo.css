@@ -1,0 +1,323 @@
+.solo-cabecalho {
+    margin-bottom: 30px;
+}
+
+.solo-cabecalho h1 {
+    margin: 8px 0;
+    font-size: 34px;
+}
+
+.solo-cabecalho p {
+    color: #68756d;
+}
+
+.solo-card {
+    max-width: 700px;
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.05);
+}
+
+.solo-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.solo-card label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.solo-card button {
+    margin-top: 20px;
+}
+
+
+.informacoes-solo {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.informacoes-solo > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+}
+
+.informacoes-solo strong {
+    font-size: 12px;
+    color: #718078;
+}
+
+.informacoes-solo span {
+    font-weight: bold;
+}
+
+
+.solo-form {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+}
+
+.grupo-form {
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e4e9e5;
+}
+
+.grupo-form h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.grid-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.grid-form label {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+.resultado-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.resultado-card {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resultado-card span {
+    font-size: 12px;
+    color: #718078;
+}
+
+.resultado-card strong {
+    font-size: 20px;
+}
+
+
+.recomendacao-principal {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.recomendacao-principal h2 {
+    margin-bottom: 25px;
+}
+
+
+.resultado-destaque {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.resultado-destaque > div {
+    background: #edf5ef;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resultado-destaque span {
+    color: #607167;
+    font-size: 12px;
+}
+
+.resultado-destaque strong {
+    color: #1f5136;
+    font-size: 21px;
+}
+
+
+.documento {
+    background: white;
+    padding: 45px;
+    border-radius: 12px;
+}
+
+.documento-cabecalho {
+    margin-bottom: 35px;
+}
+
+.documento section {
+    margin-bottom: 35px;
+}
+
+.documento section h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.documento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.documento-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 15px;
+    background: #f5f7f5;
+    border-radius: 8px;
+}
+
+.documento-grid strong {
+    font-size: 12px;
+    color: #6d796f;
+}
+
+.documento-grid span {
+    font-weight: bold;
+}
+
+
+@media print {
+
+    .navbar,
+    footer,
+    .acoes {
+        display: none !important;
+    }
+
+    .container {
+        width: 100%;
+        margin: 0;
+    }
+
+    .documento {
+        box-shadow: none;
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .informacoes-solo,
+    .resultado-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .resultado-destaque {
+        grid-template-columns: 1fr;
+    }
+
+    .documento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .informacoes-solo,
+    .resultado-grid,
+    .grid-form,
+    .documento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .solo-form,
+    .documento {
+        padding: 25px;
+    }
+
+}
+
+/* Documento da análise: complementa a identidade visual global do AgroCalc. */
+.documento { max-width: 980px; margin: 0 auto; border: 1px solid #e4e9e0; box-shadow: 0 14px 38px rgba(28,57,41,.07); }
+.documento-cabecalho .tag { display: inline-block; color: #6c9d59; font-size: 11px; font-weight: 800; letter-spacing: 1.5px; }
+.documento-cabecalho h1 { margin-top: 10px; }
+.documento section h2 { color: #173f35; }
+.nota-calculo { padding: 14px 16px; background: #f6f8f2; border: 1px solid #e4e9e0; border-radius: 10px; font-size: 12px; line-height: 1.7; }
+.acoes { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-top: 28px; }
+.botao { display: inline-flex; align-items: center; justify-content: center; min-width: 155px; padding: 11px 16px; border-radius: 9px; text-decoration: none; font-weight: 700; font-size: 13px; border: 1px solid #dbe7d4; cursor: pointer; }
+.botao.principal { background: #173f35; color: white; }
+.botao.secundario { background: #edf3e8; color: #173f35; }
+/* Impressão: manter visível somente o relatório, sem menu, rodapé ou conteúdo do site. */
+@media print {
+    @page { size: auto; margin: 12mm; }
+    body * { visibility: hidden !important; }
+    .documento, .documento * { visibility: visible !important; }
+    .documento {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #fff !important;
+    }
+    .documento .acoes { display: none !important; }
+    .documento section, .documento-grid > div, .memoria-calculo, .alerta-calculo, .nota-calculo {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
+/* Memória de cálculo e alertas para facilitar a leitura no campo e na impressão. */
+.memoria-calculo { margin-top: 22px; padding: 18px; border: 1px solid #e4e9e0; border-radius: 12px; background: #fff; }
+.memoria-calculo h2 { margin-top: 0; }
+.memoria-calculo p { font-size: 13px; line-height: 1.7; }
+.alerta-calculo { padding: 13px 15px; border: 1px solid #ead7a4; border-radius: 10px; background: #fff7df; color: #694d17; }
+.hint { display: block; margin: 6px 0 12px; color: #69766b; font-size: 12px; line-height: 1.5; }
+@media print { .memoria-calculo, .alerta-calculo { break-inside: avoid; } }
+
+
+/* Padronização visual com o restante do AgroCalc */
+.solo-cabecalho { max-width: 920px; margin: 0 auto 26px; }
+.solo-cabecalho h1 { font-family: Manrope, 'DM Sans', sans-serif; font-size: clamp(28px, 4vw, 40px); letter-spacing: -1px; line-height: 1.15; margin: 10px 0 12px; color: #1d2b23; }
+.solo-cabecalho p { max-width: 760px; line-height: 1.7; margin-bottom: 0; color: #68756d; }
+.solo-card, .solo-form { max-width: 920px; width: 100%; margin: 0 auto 28px; padding: clamp(22px, 3vw, 36px); background: #fff; border: 1px solid #e1e7dc; border-radius: 18px; box-shadow: 0 8px 28px rgba(23,63,53,.06); }
+.solo-card form { gap: 16px; }
+.solo-card label, .solo-form label { margin: 10px 0 7px; color: #35483d; font-size: 12px; font-weight: 700; }
+.solo-card select, .solo-form select, .solo-card input, .solo-form input { border: 1px solid #dce4d9; border-radius: 10px; min-height: 45px; padding: 11px 13px; font: 14px 'DM Sans', sans-serif; }
+.solo-card .botao.principal, .solo-card button, .solo-form .botao.principal { min-height: 45px; border-radius: 10px; padding: 12px 18px; background: #173f35; color: #fff; border: 0; font-weight: 700; }
+.solo-card .botao.principal:hover, .solo-card button:hover { background: #285d4e; }
+.informacoes-solo { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.informacoes-solo > div { border: 1px solid #e1e7dc; border-radius: 14px; box-shadow: 0 4px 16px rgba(23,63,53,.04); }
+@media (max-width: 760px) { .informacoes-solo { grid-template-columns: repeat(2, minmax(0, 1fr)); } .solo-card, .solo-form { padding: 22px; } }
+@media (max-width: 480px) { .informacoes-solo { grid-template-columns: 1fr; } .solo-cabecalho h1 { font-size: 28px; } }

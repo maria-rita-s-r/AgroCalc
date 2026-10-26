@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{% if propriedade %}Editar terra{% else %}Cadastrar terra{% endif %} | AgroCalc{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><div class="eyebrow">Gestão de terras</div><h1>{% if propriedade %}Editar terra{% else %}Cadastrar terra{% endif %}</h1><p>Vincule uma propriedade ao produtor responsável e informe sua localização.</p></div>
+  <a href="{{ url_for('propriedades') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Voltar para terras</a>
+</div>
+<section class="form-shell">
+  <div class="form-banner"><div class="form-icon"><i class="bi bi-house-door"></i></div><div><h1 class="form-title">Informações da terra</h1><p>Os campos com asterisco são obrigatórios.</p></div></div>
+  <form method="POST" action="{{ url_for('editar_propriedade', id=propriedade.id) if propriedade else url_for('nova_propriedade') }}" class="form-body">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <p class="section-label">Responsável e identificação</p>
+    <div class="mb-4"><label class="form-label" for="produtor_id">Produtor responsável <span class="text-danger">*</span></label>
+      <select id="produtor_id" name="produtor_id" class="form-select" required><option value="">Selecione o produtor</option>{% for prod in produtores %}<option value="{{ prod.id }}" {% if propriedade and propriedade.produtor_id == prod.id %}selected{% endif %}>{{ prod.nome }}</option>{% endfor %}</select>
+      {% if not produtores %}<div class="field-hint">Ainda não há produtores cadastrados. <a href="{{ url_for('novo_produtor') }}">Cadastrar produtor</a> antes de continuar.</div>{% else %}<div class="field-hint">Selecione quem é responsável por esta terra.</div>{% endif %}
+    </div>
+    <div class="mb-4"><label class="form-label" for="nome_propriedade">Nome da terra/propriedade <span class="text-danger">*</span></label><input id="nome_propriedade" name="nome_propriedade" class="form-control" type="text" maxlength="120" placeholder="Ex.: Sítio Boa Esperança" value="{{ propriedade.nome_propriedade if propriedade else '' }}" required></div>
+    <p class="section-label mt-4">Localização</p>
+    <div class="row g-3"><div class="col-md-8"><label class="form-label" for="municipio">Município</label><input id="municipio" name="municipio" class="form-control" type="text" maxlength="100" placeholder="Nome do município" value="{{ propriedade.municipio if propriedade else '' }}"></div><div class="col-md-4"><label class="form-label" for="estado">Estado (UF)</label><input id="estado" name="estado" class="form-control" type="text" maxlength="2" pattern="[A-Za-z]{2}" placeholder="RO" value="{{ propriedade.estado if propriedade else '' }}"><div class="field-hint">Sigla com 2 letras.</div></div></div>
+    <div class="form-actions"><a href="{{ url_for('propriedades') }}" class="btn btn-outline-secondary">Cancelar</a><button type="submit" class="btn btn-success"><i class="bi bi-check2-circle me-2"></i>{% if propriedade %}Salvar alterações{% else %}Cadastrar terra{% endif %}</button></div>
+  </form>
+</section>
+{% endblock %}

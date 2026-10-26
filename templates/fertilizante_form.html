@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if fertilizante else 'Cadastrar' }} fertilizante · AgroCalc{% endblock %}
+{% block content %}
+<section class="page-heading"><div><span class="eyebrow">CATÁLOGO DE INSUMOS</span><h1>{{ 'Editar fertilizante' if fertilizante else 'Cadastrar fertilizante' }}</h1><p>Informe a composição percentual indicada no rótulo do fabricante.</p></div><a class="secondary-button" href="{{ url_for('fertilizantes') }}">Voltar</a></section>
+<div class="card form-card"><form method="post" action="{{ acao or url_for('novo_fertilizante') }}" {% if fertilizante %}data-http-method="PUT"{% endif %}><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="form-group"><label for="nome_comercial">Nome comercial</label><input class="form-control" id="nome_comercial" name="nome_comercial" maxlength="120" required value="{{ fertilizante['nome_comercial'] if fertilizante else '' }}"></div>
+<div class="row g-3"><div class="col-md-4 form-group"><label for="teor_n">Nitrogênio (N %)</label><input class="form-control" id="teor_n" name="teor_n" type="number" min="0" max="100" step="0.01" required value="{{ fertilizante['teor_n'] if fertilizante else 0 }}"></div><div class="col-md-4 form-group"><label for="teor_p2o5">Fósforo (P₂O₅ %)</label><input class="form-control" id="teor_p2o5" name="teor_p2o5" type="number" min="0" max="100" step="0.01" required value="{{ fertilizante['teor_p2o5'] if fertilizante else 0 }}"></div><div class="col-md-4 form-group"><label for="teor_k2o">Potássio (K₂O %)</label><input class="form-control" id="teor_k2o" name="teor_k2o" type="number" min="0" max="100" step="0.01" required value="{{ fertilizante['teor_k2o'] if fertilizante else 0 }}"></div></div>
+<button class="primary-button" type="submit">{{ 'Salvar alterações' if fertilizante else 'Cadastrar fertilizante' }}</button></form></div>
+{% endblock %}

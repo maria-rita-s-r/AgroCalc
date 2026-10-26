@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Relatório detalhado · AgroCalc{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow">RELATÓRIO DE RECOMENDAÇÃO</span><h1>Relatório detalhado</h1><p>Resultado registrado para sua propriedade, talhão e cultura.</p></div>
+  <a class="secondary-button" href="{{ url_for('painel_produtor') }}#relatorios">Voltar aos relatórios</a>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><span>Propriedade</span><strong>{{ relatorio.nome_propriedade }}</strong><small>{{ relatorio.municipio or '' }}{% if relatorio.estado %}, {{ relatorio.estado }}{% endif %}</small></div>
+  <div class="stat-card"><span>Talhão</span><strong>{{ relatorio.nome_talhao }}</strong><small>Área: {{ '%.2f'|format(relatorio.area_ha or 0) }} ha</small></div>
+  <div class="stat-card"><span>Cultura</span><strong>{{ relatorio.nome_cultura }}</strong><small>Data da análise: {{ relatorio.data_coleta or 'Não informada' }}</small></div>
+  <div class="stat-card"><span>Corretivo utilizado</span><strong>{{ relatorio.nome_comercial or 'PRNT de referência' }}</strong><small>PRNT aplicado: {{ '%.2f'|format(relatorio.prnt_porcento or 100) if relatorio.prnt_porcento is defined else 'Conforme cadastro' }}</small></div>
+</div>
+<section class="data-card" style="margin-top:1.25rem;padding:1.5rem">
+  <h2>Recomendação de calagem</h2>
+  {% if relatorio.consistencia_status == 'INCONSISTENTE' %}<div class="alert alert-warning"><strong>LAUDO INCONSISTENTE — confira os valores.</strong><br>{{ relatorio.consistencia_detalhes or 'Há valores que precisam ser conferidos.' }}. Os números são exibidos para transparência, mas a recomendação não deve ser usada antes da conferência técnica.</div>{% endif %}
+  <div class="stats-grid">
+    <div class="stat-card"><span>V% atual (V1 — Saturação por Bases Atual)</span><strong>{{ '%.2f'|format(relatorio.v1_atual or 0) }}%</strong></div>
+    <div class="stat-card"><span>V% alvo (V2 — Saturação por Bases Desejada)</span><strong>{{ ('%.2f'|format(relatorio.v2_alvo_relatorio)) ~ '%' if relatorio.v2_alvo_relatorio is not none else 'Não informado' }}</strong><small>Meta definida para a cultura.</small></div>
+    <div class="stat-card"><span>CTC (Capacidade de Troca Catiônica)</span><strong>{{ '%.2f'|format(relatorio.ctc_t or 0) }} cmolc/dm³</strong><small>Capacidade de retenção e troca de nutrientes positivos.</small></div>
+    <div class="stat-card"><span>NC (Necessidade de Calagem)</span><strong>{{ '%.2f'|format(relatorio.nc_ha or 0) }} t/ha</strong><small>Quantidade teórica por hectare antes do ajuste pelo PRNT.</small></div>
+    <div class="stat-card"><span>Dose comercial ajustada pelo PRNT</span><strong>{{ '%.2f'|format(relatorio.dose_calcario_ha or 0) }} t/ha</strong><small>Quantidade por hectare considerando a eficiência declarada do calcário.</small></div>
+    <div class="stat-card"><span>Total estimado para o talhão</span><strong>{{ '%.2f'|format(relatorio.total_calcario_talhao or 0) }} t</strong><small>Dose por hectare multiplicada pela área do talhão.</small></div>
+  </div>
+  {% if relatorio.v2_alvo_relatorio is not none and relatorio.v1_atual is not none and relatorio.v2_alvo_relatorio <= relatorio.v1_atual %}
+  <p class="flash warning"><strong>Por que a necessidade ficou em zero?</strong> O V% alvo ({{ relatorio.v2_alvo_relatorio }}%) é menor ou igual ao V% atual ({{ relatorio.v1_atual }}%). Pela fórmula configurada, a diferença não gera necessidade positiva de calagem. Confirme se o V% alvo cadastrado para a cultura está correto.</p>
+  {% elif relatorio.v2_alvo_relatorio is none %}
+  <p class="flash warning">Não foi possível confirmar o V% alvo utilizado neste relatório. Edite a cultura e gere uma nova recomendação para registrar a memória de cálculo.</p>
+  {% endif %}
+  <p><strong>Fórmula utilizada:</strong> NC = max(0, ((V2 − V1) × CTC) / 100). A dose final é ajustada pelo PRNT cadastrado. Os valores devem ser conferidos pelo responsável técnico.</p>
+</section>
+<section class="data-card" style="margin-top:1.25rem;padding:1.5rem">
+  <h2>Dados informados na análise</h2>
+  <div class="table-wrap"><table><thead><tr><th>Parâmetro</th><th>Valor</th><th>Parâmetro</th><th>Valor</th></tr></thead><tbody>
+    <tr><td><strong>pH</strong><small class="d-block text-secondary">Potencial hidrogeniônico — indica acidez ou alcalinidade do solo.</small></td><td>{{ relatorio.ph if relatorio.ph is not none else '—' }}</td><td><strong>V% atual</strong><small class="d-block text-secondary">Saturação por bases atual — proporção da CTC ocupada por nutrientes básicos.</small></td><td>{{ relatorio.v1_atual if relatorio.v1_atual is not none else '—' }}%</td></tr>
+    <tr><td><strong>CTC (Capacidade de Troca Catiônica)</strong><small class="d-block text-secondary">Representa a capacidade do solo de reter e trocar nutrientes com carga positiva.</small></td><td>{{ relatorio.ctc_t if relatorio.ctc_t is not none else '—' }} cmolc/dm³</td><td><strong>Ca (Cálcio)</strong><small class="d-block text-secondary">Nutriente importante para raízes, paredes celulares e desenvolvimento da planta.</small></td><td>{{ relatorio.ca if relatorio.ca is not none else '—' }}</td></tr>
+    <tr><td><strong>Mg (Magnésio)</strong><small class="d-block text-secondary">Nutriente que faz parte da clorofila e participa da fotossíntese.</small></td><td>{{ relatorio.mg if relatorio.mg is not none else '—' }}</td><td><strong>K (Potássio)</strong><small class="d-block text-secondary">Ajuda no equilíbrio hídrico e em processos de crescimento e produção.</small></td><td>{{ relatorio.k if relatorio.k is not none else '—' }}{% if relatorio.unidade_k %} <small class="text-secondary">(valor interno normalizado; unidade original: {{ relatorio.k_original }} {{ relatorio.unidade_k }})</small>{% endif %}</td></tr>
+    <tr><td><strong>P (Fósforo)</strong><small class="d-block text-secondary">Participa da transferência de energia e do desenvolvimento das raízes.</small></td><td>{{ relatorio.p if relatorio.p is not none else '—' }}</td><td><strong>H + Al (Acidez potencial)</strong><small class="d-block text-secondary">Estimativa da acidez que pode precisar ser neutralizada, conforme o método do laudo.</small></td><td>{{ relatorio.h_al if relatorio.h_al is not none else '—' }}</td></tr>
+    <tr><td><strong>Argila</strong><small class="d-block text-secondary">Percentual de partículas finas; influencia retenção de água e comportamento dos nutrientes.</small></td><td>{{ relatorio.argila if relatorio.argila is not none else '—' }}{% if relatorio.argila is not none %}%{% endif %}</td><td><strong>Identificação do relatório</strong><small class="d-block text-secondary">Código para localizar este registro.</small></td><td>#{{ relatorio.id }}</td></tr>
+  </tbody></table></div>
+</section>
+{% endblock %}

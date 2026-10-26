@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if talhao else 'Novo' }} talhão · AgroCalc{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <a class="back-link" href="{{ url_for('painel_agronomo' if is_agronomo else 'painel_produtor') }}">← Voltar ao painel</a>
+  <div class="form-card wide">
+    <span class="eyebrow">GESTÃO DE TALHÕES</span>
+    <h1>{{ 'Editar talhão' if talhao else 'Cadastrar talhão' }}</h1>
+    <p>Vincule o talhão à terra correta e informe a área em hectares.</p>
+    {% if not terras %}
+      <div class="flash warning">{% if is_agronomo %}Cadastre uma terra e associe-a a um produtor antes de criar talhões.{% else %}Você precisa cadastrar uma terra antes de criar um talhão.{% endif %}</div>
+      <a class="primary-button" href="{{ url_for('nova_propriedade') if is_agronomo else url_for('produtor_nova_terra') }}">Cadastrar terra</a>
+    {% else %}
+      <form method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="propriedade_id">Terra / propriedade <span aria-hidden="true">*</span></label>
+        <select id="propriedade_id" name="propriedade_id" required>
+          <option value="">Selecione uma terra</option>
+          {% for terra in terras %}
+            <option value="{{ terra.id }}" {% if talhao and talhao.propriedade_id == terra.id %}selected{% endif %}>
+              {{ terra.nome_propriedade }}{% if is_agronomo %} — {{ terra.produtor_nome }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+        <label for="nome_talhao">Nome do talhão <span aria-hidden="true">*</span></label>
+        <input id="nome_talhao" name="nome_talhao" required maxlength="120" value="{{ talhao.nome_talhao if talhao else '' }}" placeholder="Ex.: Talhão Norte">
+        <label for="area_ha">Área (hectares) <span aria-hidden="true">*</span></label>
+        <input id="area_ha" type="number" name="area_ha" min="0.01" step="0.01" required value="{{ talhao.area_ha if talhao else '' }}" placeholder="Ex.: 12.5">
+        <div class="form-actions">
+          <a class="secondary-button" href="{{ url_for('talhoes') if is_agronomo else url_for('painel_produtor') }}">Cancelar</a>
+          <button class="primary-button" type="submit">Salvar talhão <span>→</span></button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

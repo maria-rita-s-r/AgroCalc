@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}
+Calculadora de Solo
+{% endblock %}
+
+{% block head %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css/solo.css') }}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="solo-cabecalho">
+
+<span class="tag">
+    ANÁLISE AGRONÔMICA
+</span>
+
+<h1>
+    Calculadora de Solo
+</h1>
+
+<p>
+    Escolha manualmente o talhão e a cultura antes de iniciar a análise.
+    Nenhuma opção será selecionada automaticamente.
+</p>
+{% if solicitacao_id %}<p class="selection-request-note">Atendimento da solicitação #{{ solicitacao_id }}</p>{% endif %}
+
+</div>
+
+
+<div class="solo-card selection-card">
+
+<form
+    action="{{ url_for('formulario_solo') }}"
+    method="GET"
+>{% if solicitacao_id %}<input type="hidden" name="solicitacao_id" value="{{ solicitacao_id }}">{% endif %}
+
+
+<label for="talhao_id">
+    Talhão <span class="required-mark">*</span>
+</label>
+
+<select
+    id="talhao_id"
+    name="talhao_id"
+    required
+>
+
+<option value="">
+    Selecione o talhão
+</option>
+
+{% for talhao in talhoes %}
+
+<option value="{{ talhao['id'] }}">
+
+{{ talhao["nome_talhao"] }}
+— {{ talhao["nome_propriedade"] }}
+({{ '%.2f'|format(talhao["area_ha"] or 0) }} ha)
+
+</option>
+
+{% endfor %}
+
+</select>
+
+
+<label for="cultura_id">
+    Cultura <span class="required-mark">*</span>
+</label>
+
+<select
+    id="cultura_id"
+    name="cultura_id"
+    required
+>
+
+<option value="">
+    Selecione a cultura
+</option>
+
+{% for cultura in culturas %}
+
+<option value="{{ cultura['id'] }}">
+
+{{ cultura["nome_cultura"] }}{% if cultura["nome_propriedade"] %} — {{ cultura["nome_propriedade"] }}{% else %} — Catálogo geral{% endif %}
+
+</option>
+
+{% endfor %}
+
+</select>
+
+
+<button
+    type="submit"
+    class="botao principal"
+>
+    Confirmar seleção e continuar
+</button>
+
+</form>
+
+</div>
+
+
+{% endblock %}
